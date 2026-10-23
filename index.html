@@ -876,7 +876,7 @@ function updateMinit(){
     </div>`;
   });
   const lbl=["Disediakan oleh:","Disemak oleh:","Disahkan oleh:"], jk=jkName();
-  h+=`<div class="m-sign">${M.sign.map((s,i)=>`<div>${lbl[i]}<div class="gap"></div><strong>(${esc(signName(s.n))})</strong><br>${esc(s.j)}${jk?"<br>"+esc(jk):""}<br>${esc(K)}<br>Tarikh:</div>`).join("")}</div></div>`;
+  h+=`<div class="m-sign">${M.sign.map((s,i)=>`<div>${lbl[i]}<div class="gap"></div><strong>(${esc(signName(s.n))})</strong><br>${esc(s.j)}<br>${esc(K)}<br>Tarikh:</div>`).join("")}</div></div>`;
   $("previewMinit").innerHTML=h;
 }
 
@@ -911,7 +911,6 @@ function buildMinitXML(){
   const lbl=["Disediakan oleh:","Disemak oleh:","Disahkan oleh:"], jk=jkName();
   const signCell=(i)=>{ const s=M.sign[i]; let c=P(R(lbl[i]),{after:0})+P("",{after:0})+P("",{after:0})+P("",{after:0});
     c+=P(R("("+signName(s.n)+")",{b:true}),{after:0})+P(R(s.j),{after:0});
-    if(jk) c+=P(R(jk),{after:0});
     c+=P(R(K),{after:0})+P(R("Tarikh:"),{after:0}); return c; };
   const w=[4150,4150];
   b+=P("",{after:480});

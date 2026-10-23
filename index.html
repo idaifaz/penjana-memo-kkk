@@ -7,7 +7,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: borang di kiri, pratonton kertas A4 di kanan (bertindan di telefon) */
+/* Layout: tab Memo / Minit di atas, borang di kiri, pratonton kertas A4 di kanan (bertindan di telefon) */
 :root{
   --bg:#eef0f4; --surface:#ffffff; --ink:#1b2233; --muted:#5b6478; --line:#d5d9e2;
   --accent:#1d3f8f; --accent-ink:#ffffff; --accent-soft:#e3e9f7;
@@ -31,14 +31,18 @@
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:14px;line-height:1.5;
   padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 40px}
-.wrap{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
-header.top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px}
+.wrap{max-width:1260px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px}
 header.top h1{margin:0;font-size:22px;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
-header.top p{margin:0;color:var(--muted);font-size:13px}
+.tabs{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:3px;gap:3px}
+.tabs button{border:0;background:transparent;padding:7px 16px;border-radius:7px;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
 .grid{display:grid;grid-template-columns:1fr;gap:18px;align-items:start}
 @media (min-width:1000px){.grid{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr)} .previewcol{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);max-height:calc(100vh - 24px);overflow:auto}}
+.leftcol{display:flex;flex-direction:column;gap:18px;min-width:0}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
 .panel h2{margin:0;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.panel h3{margin:0;font-size:13px;font-weight:700}
 .form{display:flex;flex-direction:column;gap:18px;min-width:0}
 .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
 label.f{display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:13px;min-width:0}
@@ -47,11 +51,14 @@ label.chk{display:flex;align-items:center;gap:8px;font-weight:500;font-size:13px
 label.chk input{accent-color:var(--accent);width:16px;height:16px}
 input[type=text],input[type=date],input[type=time],input[type=search],select,textarea{
   font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:8px 10px;width:100%;min-width:0}
-textarea{resize:vertical;min-height:64px}
+textarea{resize:vertical;min-height:60px}
 input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,.staff input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .hint{color:var(--muted);font-size:12px;margin:0}
 button{font:inherit;cursor:pointer;border-radius:7px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 12px;font-weight:600}
 button:hover{border-color:var(--accent)}
+button.sm{padding:4px 9px;font-size:12px}
+button.ghost{border-style:dashed;color:var(--accent)}
+button.danger:hover{border-color:var(--err);color:var(--err)}
 .btn-main{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);padding:12px 18px;font-size:15px;width:100%}
 .btn-main:hover{filter:brightness(1.07)}
 .btn-main:disabled{opacity:.6;cursor:progress}
@@ -68,6 +75,23 @@ details.set .inner{display:flex;flex-direction:column;gap:12px}
 .status{font-size:13px;margin:0;min-height:1.2em}
 .status.ok{color:var(--ok)} .status.err{color:var(--err)}
 .manage{display:flex;flex-direction:column;gap:8px}
+
+/* Minit: senarai orang & perkara */
+.people{display:flex;flex-direction:column;gap:6px}
+.person{display:grid;grid-template-columns:24px minmax(0,1.3fr) minmax(0,1fr) auto;gap:6px;align-items:center}
+.person .n{font-variant-numeric:tabular-nums;color:var(--muted);font-size:12px;text-align:right}
+.person input{padding:6px 8px}
+.mv{display:flex;gap:3px}
+@media (max-width:560px){.person{grid-template-columns:20px minmax(0,1fr) auto}.person input.jw{grid-column:2 / 3}.person .mv{grid-row:1 / 3;grid-column:3}}
+.pt{border:1px solid var(--line);border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.pt-head{display:flex;gap:8px;align-items:center}
+.pt-head .lt{font-weight:700;color:var(--accent);width:22px;flex:none}
+.pt-head input{flex:1;min-width:0}
+.tind{display:grid;grid-template-columns:minmax(120px,160px) minmax(0,1fr);gap:8px}
+.sec{border-left:3px solid var(--accent-soft);padding-left:12px;display:flex;flex-direction:column;gap:10px}
+.sec-head{display:flex;gap:8px;align-items:center}
+.sec-head .rn{font-weight:700;min-width:30px}
+.autotext{font-size:12.5px;color:var(--muted);background:var(--bg);border:1px dashed var(--line);border-radius:7px;padding:8px 10px;margin:0}
 
 /* Pratonton kertas (sentiasa putih, macam kertas sebenar) */
 .p-label{font-size:11px;color:var(--muted);margin:0 0 6px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
@@ -89,7 +113,6 @@ table.p-tbl td.body{padding:12px 12px 10px;vertical-align:top}
 .paper p{margin:0 0 10px;text-align:justify}
 .p-det{display:grid;grid-template-columns:auto 1fr;gap:1px 0;margin:0 0 10px 15%}
 .p-det .k{padding-right:16px}
-.p-det .v b{font-weight:700}
 .p-ag{list-style:none;margin:2px 0 0 0;padding:0;grid-column:1 / -1;padding-left:calc(15% + 70px)}
 .p-ag li{display:grid;grid-template-columns:28px 1fr;gap:10px;text-align:justify}
 .p-ag li span{text-align:right}
@@ -98,6 +121,28 @@ table.p-tbl td.body{padding:12px 12px 10px;vertical-align:top}
 .p-lamp{text-align:right;margin-bottom:16px}
 .p-ed{list-style:none;margin:0 0 0 30px;padding:0;display:flex;flex-direction:column;gap:10px}
 .p-ed li{display:grid;grid-template-columns:24px 1fr;gap:4px}
+/* minit */
+.m-title{text-align:center;font-weight:700;margin-bottom:20px}
+.m-det{display:grid;grid-template-columns:110px 20px 1fr;margin-bottom:18px}
+.m-det b{font-weight:700}
+.m-h{font-weight:700;margin:14px 0 8px}
+.m-ppl{list-style:none;margin:0 0 0 22px;padding:0;display:flex;flex-direction:column;gap:9px}
+.m-ppl li{display:grid;grid-template-columns:22px 1fr;gap:6px}
+.m-ppl li span{text-align:right}
+.m-ppl em{display:block}
+.m-sec{margin-top:18px}
+.m-sec h4{margin:0 0 8px;font-size:11.5px;display:grid;grid-template-columns:30px 1fr}
+.m-sec h4 u{text-decoration-thickness:1px}
+.m-body{margin-left:30px}
+.m-body p{margin:0 0 6px}
+.m-tind{text-align:right;font-weight:700;margin:2px 0 8px}
+.m-pts{margin-left:30px}
+.m-pt{display:grid;grid-template-columns:22px 1fr;gap:4px;margin-left:26px}
+.m-pt p{margin:0 0 4px}
+.m-sign{display:grid;grid-template-columns:1fr 1fr;gap:26px 16px;margin:34px 0 0 30px}
+.m-sign div{line-height:1.35}
+.m-sign .gap{height:30px}
+.m-empty{color:var(--paper-mute);font-style:italic}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -105,10 +150,15 @@ table.p-tbl td.body{padding:12px 12px 10px;vertical-align:top}
 <div class="wrap">
   <header class="top">
     <h1>Penjana Memo KKK</h1>
-    <p>Isi butiran, pilih staf, jana fail Word ikut format memo rasmi.</p>
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" id="tabMemo" aria-selected="true">Memo</button>
+      <button type="button" role="tab" id="tabMinit" aria-selected="false">Minit mesyuarat</button>
+    </div>
   </header>
 
   <div class="grid">
+    <div class="leftcol">
+    <!-- ================= MEMO ================= -->
     <form class="form" id="frm" autocomplete="off">
       <section class="panel">
         <h2>Butiran memo</h2>
@@ -166,31 +216,11 @@ Hal-hal lain</textarea></label>
         <ul class="staff" id="staff"></ul>
         <div class="tools"><button type="button" id="urusBtn">Urus senarai staf</button></div>
         <div class="manage" id="urus" hidden>
-          <label class="f">Senarai staf <small>Satu nama satu baris. Boleh letak jawatan dalam kurungan, contoh: Pn. Ida Fadliza binti Abu Zarin (Setiausaha). Susunan di sini dipakai bila pilih "Ikut susunan senarai".</small>
+          <label class="f">Senarai staf <small>Satu nama satu baris. Boleh letak jawatan dalam kurungan, contoh: Pn. Ida Fadliza Binti Abu Zarin (Setiausaha). Susunan di sini dipakai bila pilih "Ikut susunan senarai".</small>
             <textarea id="masterTxt" rows="10"></textarea>
           </label>
           <div class="tools"><button type="button" id="simpanStaf">Simpan senarai</button><button type="button" id="batalStaf">Batal</button></div>
         </div>
-      </section>
-
-      <section class="panel">
-        <details class="set">
-          <summary>Tetapan kolej &amp; penandatangan</summary>
-          <div class="inner">
-            <label class="f">Kepala surat <small>Satu baris satu ayat</small><textarea id="kepala" rows="2">KOLEJ KOMUNITI KUANTAN
-KEMENTERIAN PENDIDIKAN TINGGI</textarea></label>
-            <div class="row">
-              <label class="f">Nama penandatangan<input type="text" id="ttnama" value="MOHAMMAD AZWAN BIN JA'AFAR, AMP"></label>
-              <label class="f">Jawatan<input type="text" id="ttjaw" value="Pengarah"></label>
-            </div>
-            <label class="f">Baris bawah jawatan<textarea id="ttbawah" rows="2">Kolej Komuniti Kuantan
-Kementerian Pendidikan Tinggi</textarea></label>
-            <label class="f">Slogan<textarea id="slogan" rows="2">"MALAYSIA MADANI"
-"BERKHIDMAT UNTUK NEGARA"</textarea></label>
-            <label class="f">Nota kaki <small>Kosongkan jika tiada</small><input type="text" id="nota" value="AMALAN HIJAU | Sila pertimbangkan kelestarian alam sekitar, cetak hanya apabila perlu."></label>
-            <p class="hint">Tetapan ini disimpan dalam pelayar anda.</p>
-          </div>
-        </details>
       </section>
 
       <section class="panel">
@@ -199,12 +229,81 @@ Kementerian Pendidikan Tinggi</textarea></label>
       </section>
     </form>
 
+    <!-- ================= MINIT ================= -->
+    <form class="form" id="frmMinit" autocomplete="off" hidden>
+      <section class="panel">
+        <h2>Maklumat mesyuarat</h2>
+        <div class="tools"><button type="button" id="dariMemo">Isi dari memo</button><span class="hint">Salin nama mesyuarat, bil, tarikh, tempat, masa dan staf yang dipilih dalam tab Memo.</span></div>
+        <div class="row">
+          <label class="f" style="grid-column:span 2">Nama mesyuarat<input type="text" data-path="nama"></label>
+          <label class="f">Bil<input type="text" data-path="bil" placeholder="5/2026"></label>
+        </div>
+        <div class="row">
+          <label class="f">Tarikh<input type="date" data-path="tarikh"></label>
+          <label class="f">Masa<input type="time" data-path="masa"></label>
+        </div>
+        <label class="f">Tempat<input type="text" data-path="tempat"></label>
+      </section>
+
+      <section class="panel">
+        <h2>Kehadiran</h2>
+        <h3>Hadir</h3>
+        <div class="people" id="hadirList"></div>
+        <div class="tools"><input type="text" id="addHadir" list="staffList" placeholder="Taip atau pilih nama staf" style="flex:1 1 200px"><button type="button" class="sm" id="addHadirBtn">Tambah</button></div>
+        <h3>Tidak hadir bersebab</h3>
+        <div class="people" id="absenList"></div>
+        <div class="tools"><input type="text" id="addAbsen" list="staffList" placeholder="Taip atau pilih nama staf" style="flex:1 1 200px"><button type="button" class="sm" id="addAbsenBtn">Tambah</button></div>
+        <p class="hint">Jawatan yang ditaip akan diingat untuk nama yang sama pada minit akan datang.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Kandungan minit</h2>
+        <div id="secs"></div>
+        <button type="button" class="ghost" id="addSec">+ Tambah agenda (selepas Perkara Berbangkit)</button>
+      </section>
+
+      <section class="panel">
+        <h2>Penutup &amp; pengesahan</h2>
+        <label class="f">Mesyuarat ditangguhkan pada jam<input type="time" data-path="tutup"></label>
+        <div id="signs" style="display:flex;flex-direction:column;gap:10px"></div>
+      </section>
+
+      <section class="panel">
+        <button type="submit" class="btn-main" id="janaMinit">Jana minit (.docx)</button>
+        <div class="tools"><button type="button" class="sm danger" id="resetMinit">Mula minit baharu</button><span class="hint" id="resetHint"></span></div>
+        <p class="status" id="statusMinit" role="status"></p>
+      </section>
+    </form>
+
+    <section class="panel">
+      <details class="set">
+        <summary>Tetapan kolej &amp; penandatangan memo</summary>
+        <div class="inner">
+          <label class="f">Kepala surat <small>Satu baris satu ayat</small><textarea id="kepala" rows="2">KOLEJ KOMUNITI KUANTAN
+KEMENTERIAN PENDIDIKAN TINGGI</textarea></label>
+          <div class="row">
+            <label class="f">Nama penandatangan memo<input type="text" id="ttnama" value="MOHAMMAD AZWAN BIN JA'AFAR, AMP"></label>
+            <label class="f">Jawatan<input type="text" id="ttjaw" value="Pengarah"></label>
+          </div>
+          <label class="f">Baris bawah jawatan<textarea id="ttbawah" rows="2">Kolej Komuniti Kuantan
+Kementerian Pendidikan Tinggi</textarea></label>
+          <label class="f">Slogan<textarea id="slogan" rows="2">"MALAYSIA MADANI"
+"BERKHIDMAT UNTUK NEGARA"</textarea></label>
+          <label class="f">Nota kaki memo <small>Kosongkan jika tiada</small><input type="text" id="nota" value="AMALAN HIJAU | Sila pertimbangkan kelestarian alam sekitar, cetak hanya apabila perlu."></label>
+          <p class="hint">Tetapan, senarai staf dan draf minit disimpan dalam browser ini.</p>
+        </div>
+      </details>
+    </section>
+    </div>
+
     <div class="previewcol">
       <p class="p-label">Pratonton</p>
       <div class="paperbox" id="preview"></div>
+      <div class="paperbox" id="previewMinit" hidden></div>
     </div>
   </div>
 </div>
+<datalist id="staffList"></datalist>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
@@ -294,24 +393,12 @@ const store = {
   set(k,v){try{localStorage.setItem("memoKKK2:"+k,JSON.stringify(v))}catch(e){}}
 };
 
-// Susunan: En./Pn./Cik/Tn. tak dikira; Ts. dan Dr. dikira sebagai huruf T dan D
-const TITLE_RE=/^(en|pn|cik|tn|encik|puan|tuan)(?:\.\s*|\s+)/i;
-function sortKey(n){let s=n.trim().replace(/\s+/g," "),p;do{p=s;s=s.replace(TITLE_RE,"");}while(s!==p);return s;}
-const byAbjad=a=>a.slice().sort((x,y)=>sortKey(x).localeCompare(sortKey(y),"ms",{sensitivity:"base"}));
-
-let staff = store.get("staff4", DEFAULT_STAFF.slice());
-let picked = new Set(store.get("picked3", []));
-const ordered = () => $("susun").value==="abjad" ? byAbjad(staff) : staff.slice();
-
-const SETTINGS = ["daripada","kepada","kepala","ttnama","ttjaw","ttbawah","slogan","nota","hoff","susun"];
-SETTINGS.forEach(id=>{const v=store.get("f:"+id,null); if(v!=null) $(id).value=v;});
-const ph=store.get("f:pakaiHijri",false); $("pakaiHijri").checked=ph; $("hijriBox").hidden=!ph;
-
-// ---------- tarikh & masa ----------
+// ---------- utiliti ----------
 const pad = n => String(n).padStart(2,"0");
 function todayISO(){const d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
 function parseISO(s){if(!s)return null;const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d,12);}
 function tarikhMasihi(d){return d?d.getDate()+" "+BULAN[d.getMonth()]+" "+d.getFullYear():"";}
+const tarikhHari = d => d ? tarikhMasihi(d)+" ("+HARI[d.getDay()]+")" : "";
 function tarikhHijri(d,off){
   if(!d) return "";
   try{
@@ -321,23 +408,9 @@ function tarikhHijri(d,off){
     return g("day")+" "+HBULAN[g("month")-1]+" "+g("year");
   }catch(e){return "";}
 }
-function masa(t){
-  if(!t) return "";
-  const [h,m]=t.split(":").map(Number);
-  const w = h<12?"pg":(h<14?"tgh":(h<19?"ptg":"mlm"));
-  let h12=h%12; if(h12===0) h12=12;
-  return h12+"."+pad(m)+" "+w;
-}
-$("tmemo").value = todayISO();
-let hijriTouched=false;
-function autoHijri(){ if(!hijriTouched) $("hijri").value = tarikhHijri(parseISO($("tmemo").value), Number($("hoff").value)); }
-$("hijri").addEventListener("input",()=>{hijriTouched=$("hijri").value.trim()!=="";});
-$("tmemo").addEventListener("input",()=>{hijriTouched=false;autoHijri();});
-$("hoff").addEventListener("change",()=>{hijriTouched=false;autoHijri();});
-$("pakaiHijri").addEventListener("change",()=>{$("hijriBox").hidden=!$("pakaiHijri").checked;store.set("f:pakaiHijri",$("pakaiHijri").checked);});
-autoHijri();
-
-// ---------- teks kaya (**bold**, *italik*) ----------
+function masaParts(t){ if(!t) return null; const [h,m]=t.split(":").map(Number); let h12=h%12; if(h12===0)h12=12; return {h,m,txt:h12+"."+pad(m)}; }
+function masa(t){ const p=masaParts(t); if(!p) return ""; return p.txt+" "+(p.h<12?"pg":(p.h<14?"tgh":(p.h<19?"ptg":"mlm"))); }
+function masaPenuh(t){ const p=masaParts(t); if(!p) return ""; return p.txt+" "+(p.h<12?"pagi":(p.h<14?"tengah hari":(p.h<19?"petang":"malam"))); }
 function rich(s){
   const out=[]; const re=/(\*\*[^*]+\*\*|\*[^*]+\*)/g; let last=0,m;
   while((m=re.exec(s))){ if(m.index>last) out.push({t:s.slice(last,m.index)});
@@ -347,9 +420,43 @@ function rich(s){
   return out;
 }
 const plain = s => s.replace(/\*\*?([^*]+)\*\*?/g,"$1");
-const lines = s => s.split("\n").map(x=>x.trim()).filter(Boolean);
-const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const lines = s => (s||"").split("\n").map(x=>x.trim()).filter(Boolean);
+const esc = s => String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 function roman(n){const v=[[10,"x"],[9,"ix"],[5,"v"],[4,"iv"],[1,"i"]];let r="";for(const [a,s] of v){while(n>=a){r+=s;n-=a;}}return r;}
+const letter = i => String.fromCharCode(97+i)+")";
+const richHTML = s => rich(s).map(x=>x.b?"<strong>"+esc(x.t)+"</strong>":x.i?"<em>"+esc(x.t)+"</em>":esc(x.t)).join("");
+const TITLE_RE=/^(en|pn|cik|tn|encik|puan|tuan)(?:\.\s*|\s+)/i;
+function sortKey(n){let s=n.trim().replace(/\s+/g," "),p;do{p=s;s=s.replace(TITLE_RE,"");}while(s!==p);return s;}
+const byAbjad=a=>a.slice().sort((x,y)=>sortKey(x).localeCompare(sortKey(y),"ms",{sensitivity:"base"}));
+const titleCase = s => s.toLowerCase().replace(/(^|\s)(\S)/g,(m,a,b)=>a+b.toUpperCase());
+
+// ---------- tab ----------
+function setTab(t){
+  const minit=t==="minit";
+  $("tabMemo").setAttribute("aria-selected",String(!minit)); $("tabMinit").setAttribute("aria-selected",String(minit));
+  $("frm").hidden=minit; $("frmMinit").hidden=!minit; $("preview").hidden=minit; $("previewMinit").hidden=!minit;
+  store.set("tab",t);
+}
+$("tabMemo").addEventListener("click",()=>setTab("memo"));
+$("tabMinit").addEventListener("click",()=>setTab("minit"));
+
+// ===================================================== MEMO
+let staff = store.get("staff4", DEFAULT_STAFF.slice());
+let picked = new Set(store.get("picked3", []));
+const ordered = () => $("susun").value==="abjad" ? byAbjad(staff) : staff.slice();
+
+const SETTINGS = ["daripada","kepada","kepala","ttnama","ttjaw","ttbawah","slogan","nota","hoff","susun"];
+SETTINGS.forEach(id=>{const v=store.get("f:"+id,null); if(v!=null) $(id).value=v;});
+const ph=store.get("f:pakaiHijri",false); $("pakaiHijri").checked=ph; $("hijriBox").hidden=!ph;
+
+$("tmemo").value = todayISO();
+let hijriTouched=false;
+function autoHijri(){ if(!hijriTouched) $("hijri").value = tarikhHijri(parseISO($("tmemo").value), Number($("hoff").value)); }
+$("hijri").addEventListener("input",()=>{hijriTouched=$("hijri").value.trim()!=="";});
+$("tmemo").addEventListener("input",()=>{hijriTouched=false;autoHijri();});
+$("hoff").addEventListener("change",()=>{hijriTouched=false;autoHijri();});
+$("pakaiHijri").addEventListener("change",()=>{$("hijriBox").hidden=!$("pakaiHijri").checked;store.set("f:pakaiHijri",$("pakaiHijri").checked);});
+autoHijri();
 
 function data(){
   const nama=$("nama").value.trim().replace(/\s+/g," ");
@@ -368,9 +475,7 @@ function data(){
     para2: tujuan
       ? "Sukacita dimaklumkan bahawa "+nama+" akan diadakan bagi "+tujuan+". Tuan/puan dikehendaki hadir mengikut ketetapan berikut :"
       : "Sukacita dimaklumkan bahawa tuan/puan dikehendaki hadir ke "+jenis+" mengikut ketetapan berikut :",
-    det:[["Tarikh", dp? tarikhMasihi(dp)+" ("+HARI[dp.getDay()]+")":""],
-         ["Masa", tamat ? mula+" – "+tamat : mula],
-         ["Tempat",$("tempat").value.trim()]],
+    det:[["Tarikh", tarikhHari(dp)],["Masa", tamat ? mula+" – "+tamat : mula],["Tempat",$("tempat").value.trim()]],
     agenda: lines($("agenda").value),
     para3: $("hadir").value==="wajib"
       ? "Kehadiran adalah **DIWAJIBKAN**. Kerjasama dari pihak tuan/puan amat dihargai."
@@ -382,7 +487,6 @@ function data(){
   };
 }
 
-// ---------- senarai staf ----------
 function renderStaff(){
   const q=$("cari").value.trim().toLowerCase();
   const ul=$("staff"); ul.innerHTML="";
@@ -396,6 +500,7 @@ function renderStaff(){
     lb.append(cb,sp); li.appendChild(lb); ul.appendChild(li);
   });
   $("kira").textContent=staff.filter(s=>picked.has(s)).length+" dipilih";
+  $("staffList").innerHTML=byAbjad(staff).map(s=>`<option value="${esc(s)}"></option>`).join("");
 }
 function savePicked(){store.set("picked3",[...picked]);}
 $("cari").addEventListener("input",renderStaff);
@@ -412,8 +517,6 @@ $("simpanStaf").addEventListener("click",()=>{
   $("urus").hidden=true;$("urusBtn").hidden=false; renderStaff(); update();
 });
 
-// ---------- pratonton ----------
-function richHTML(s){return rich(s).map(x=>x.b?"<strong>"+esc(x.t)+"</strong>":x.i?"<em>"+esc(x.t)+"</em>":esc(x.t)).join("");}
 function update(){
   const d=data();
   const sal=d.salinan.length;
@@ -448,12 +551,12 @@ function update(){
   $("preview").innerHTML=p1+p2;
 }
 
-// ---------- DOCX ----------
-const X = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+// ===================================================== DOCX (dikongsi)
+const X = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 function R(t,o={}){
   let p="";
   if(o.font)p+=`<w:rFonts w:ascii="${o.font}" w:hAnsi="${o.font}" w:cs="${o.font}"/>`;
-  if(o.b)p+="<w:b/>"; if(o.i)p+="<w:i/>";
+  if(o.b)p+="<w:b/>"; if(o.i)p+="<w:i/>"; if(o.u)p+='<w:u w:val="single"/>';
   if(o.color)p+=`<w:color w:val="${o.color}"/>`;
   if(o.sz)p+=`<w:sz w:val="${o.sz}"/><w:szCs w:val="${o.sz}"/>`;
   return `<w:r>${p?"<w:rPr>"+p+"</w:rPr>":""}<w:t xml:space="preserve">${X(t)}</w:t></w:r>`;
@@ -469,7 +572,7 @@ function P(runs,o={}){
   if(o.align)pp+=`<w:jc w:val="${o.align}"/>`;
   return `<w:p><w:pPr>${pp}</w:pPr>${runs}</w:p>`;
 }
-const richRuns = (s,base={}) => rich(s).map(x=>R(x.t,{...base,b:base.b||x.b,i:x.i})).join("");
+const richRuns = (s,base={}) => rich(s).map(x=>R(x.t,{...base,b:base.b||x.b,i:base.i||x.i})).join("");
 function cell(w,content,o={}){
   let pr=`<w:tcW w:w="${w}" w:type="dxa"/>`;
   if(o.span)pr+=`<w:gridSpan w:val="${o.span}"/>`;
@@ -482,22 +585,23 @@ function cell(w,content,o={}){
 function table(widths,rows,o={}){
   const total=widths.reduce((a,b)=>a+b,0);
   const L='w:val="single" w:sz="6" w:color="000000"';
-  const bd=o.nob?"":`<w:tblBorders><w:top ${L}/><w:left ${L}/><w:bottom ${L}/><w:right ${L}/><w:insideH ${L}/><w:insideV ${L}/></w:tblBorders>`;
-  return `<w:tbl><w:tblPr><w:tblW w:w="${total}" w:type="dxa"/>${o.center?'<w:jc w:val="center"/>':""}${bd}<w:tblLayout w:type="fixed"/><w:tblCellMar><w:top w:w="60" w:type="dxa"/><w:left w:w="110" w:type="dxa"/><w:bottom w:w="60" w:type="dxa"/><w:right w:w="110" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>${widths.map(w=>`<w:gridCol w:w="${w}"/>`).join("")}</w:tblGrid>${rows.map(r=>"<w:tr>"+r.join("")+"</w:tr>").join("")}</w:tbl>`;
+  const bd=o.nob?'<w:tblBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/><w:insideH w:val="nil"/><w:insideV w:val="nil"/></w:tblBorders>':`<w:tblBorders><w:top ${L}/><w:left ${L}/><w:bottom ${L}/><w:right ${L}/><w:insideH ${L}/><w:insideV ${L}/></w:tblBorders>`;
+  return `<w:tbl><w:tblPr><w:tblW w:w="${total}" w:type="dxa"/>${o.center?'<w:jc w:val="center"/>':""}${o.ind?`<w:tblInd w:w="${o.ind}" w:type="dxa"/>`:""}${bd}<w:tblLayout w:type="fixed"/><w:tblCellMar><w:top w:w="60" w:type="dxa"/><w:left w:w="110" w:type="dxa"/><w:bottom w:w="60" w:type="dxa"/><w:right w:w="110" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>${widths.map(w=>`<w:gridCol w:w="${w}"/>`).join("")}</w:tblGrid>${rows.map(r=>"<w:tr>"+r.join("")+"</w:tr>").join("")}</w:tbl>`;
 }
 function logoRun(){
   const hEmu=594360, wEmu=Math.round(hEmu*logo.w/logo.h);
   return `<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${wEmu}" cy="${hEmu}"/><wp:docPr id="1" name="Logo"/><a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:nvPicPr><pic:cNvPr id="1" name="logo"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rIdLogo"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${wEmu}" cy="${hEmu}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r>`;
 }
+const docWrap = (b,mar) => `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"><w:body>${b}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="${mar[0]}" w:right="${mar[1]}" w:bottom="${mar[0]}" w:left="${mar[1]}" w:header="567" w:footer="567" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+
 function buildDocXML(d){
   const W=9360; let b="";
-  // kepala
   b+=P(logoRun(),{align:"center",after:40});
   d.kepala.forEach(k=>{ b+=P(R(k,{b:true,font:"Calibri",sz:24}),{align:"center",after:0}); });
   b+=P("",{after:0,line:200});
   b+=table([5200],[[cell(5200,P(R("MEMO",{b:true,font:"Cambria",sz:32}),{align:"center",after:0}))]],{center:true});
   b+=P("",{after:60});
-  // rujukan & tarikh
   if(d.hijri){
     const refL=P(R("Ruj. Fail: "),{after:0});
     const refR=P(R("Tarikh: "+d.hijri),{after:0,align:"right"})+P(R(d.masihi),{after:0,align:"right"});
@@ -506,7 +610,6 @@ function buildDocXML(d){
     b+=P(R("Ruj. Fail: ")+TAB+R("Tarikh: "+d.masihi),{after:0,tabs:[["right",W-280]],ind:[280,0]});
   }
   b+=P("",{after:120});
-  // kotak memo: TAJUK, DARIPADA, KEPADA + badan dalam satu bingkai
   const cw=[1500,4900,2960];
   const sal=d.salinan.length;
   const lab=t=>cell(cw[0],P(R(t,{b:true}),{after:0,align:"center"}),{va:"center"});
@@ -518,7 +621,7 @@ function buildDocXML(d){
   d.det.forEach(([k,v],i)=>{ const last=i===d.det.length-1&&!ag.length; body+=P(R(k)+TAB+R(": ")+R(v,{b:true}),{after:last?200:0,tabs:[["left",2650]],ind:[2830,1300]}); });
   if(ag.length){
     body+=P(R("Agenda")+TAB+R(":"),{after:0,tabs:[["left",2650]],ind:[2830,1300]});
-    ag.forEach((a,i)=>{ body+=P(TAB+R(roman(i+1)+".")+TAB+R(a),{after:i===ag.length-1?200:0,align:"both",tabs:[["right",3550],["left",3830]],ind:[3830,3830]}); });
+    ag.forEach((a,i)=>{ body+=P(TAB+R(roman(i+1)+".")+TAB+R(a),{after:i===ag.length-1?200:0,tabs:[["right",3550],["left",3830]],ind:[3830,3830]}); });
   }
   body+=P(R("3.")+TAB+richRuns(d.para3),{after:200,align:"both",tabs:[["left",720]]});
   body+=P(R("Sekian, terima kasih."),{after:360});
@@ -527,7 +630,6 @@ function buildDocXML(d){
   body+=P("",{after:0,keep:1})+P("",{after:0,keep:1})+P("",{after:0,keep:1});
   body+=P(R("(")+R(d.ttnama,{b:true})+R(")"),{after:0,keep:1});
   [d.ttjaw,...d.ttbawah].forEach((s,i,a)=>{ body+=P(R(s),{after:0,keep:i<a.length-1}); });
-
   const rows=[
     [lab("TAJUK"),cell(cw[1]+cw[2],P(R(d.tajuk,{b:true}),{after:0}),{span:2,va:"center"})],
     sal?[lab("DARIPADA"),cell(cw[1],P(R(d.daripada),{after:0}),{va:"center"}),cell(cw[2],salCell,{vm:"start"})]
@@ -538,44 +640,35 @@ function buildDocXML(d){
   ];
   b+=table(cw,rows,{center:true});
   if(d.nota) b+=P(R(d.nota,{b:true,color:"0A9A45",sz:18}),{before:160,after:0,align:"center"});
-  // lampiran
   b+=P(R(d.lampHead),{pageBreak:1,after:360,align:"right"});
   d.edaran.forEach((n,i)=>{ b+=P(R((i+1)+".")+TAB+R(n),{after:200,tabs:[["left",1100]],ind:[1100,500]}); });
-  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"><w:body>${b}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="851" w:right="1273" w:bottom="851" w:left="1273" w:header="567" w:footer="567" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+  return docWrap(b,[851,1273]);
 }
 const STYLES=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:eastAsia="Arial" w:cs="Arial"/><w:sz w:val="22"/><w:szCs w:val="22"/><w:lang w:val="ms-MY"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="0" w:line="264" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style><w:style w:type="table" w:default="1" w:styleId="TableNormal"><w:name w:val="Normal Table"/><w:tblPr><w:tblCellMar><w:left w:w="108" w:type="dxa"/><w:right w:w="108" w:type="dxa"/></w:tblCellMar></w:tblPr></w:style></w:styles>`;
-
-async function buildDocx(d){
+async function buildDocx(docXML, withLogo){
   const zip=new JSZip();
   zip.file("[Content_Types].xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>`);
   zip.file("_rels/.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`);
   zip.file("word/_rels/document.xml.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rIdStyles" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rIdLogo" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/logo.png"/></Relationships>`);
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rIdStyles" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>${withLogo?'<Relationship Id="rIdLogo" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/logo.png"/>':""}</Relationships>`);
   zip.file("word/styles.xml",STYLES);
-  zip.file("word/document.xml",buildDocXML(d));
-  zip.file("word/media/logo.png", logo.data.split(",")[1], {base64:true});
+  zip.file("word/document.xml",docXML);
+  if(withLogo) zip.file("word/media/logo.png", logo.data.split(",")[1], {base64:true});
   return zip.generateAsync({type:"blob",mimeType:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
 }
 
-// ---------- jana ----------
+// ---------- simpan fail ----------
 let downloads=null;
 if(window.claude && window.claude.use){ window.claude.use("downloads").then(x=>{downloads=x;}).catch(()=>{}); }
-function setStatus(t,cls){const s=$("status");s.textContent=t;s.className="status"+(cls?" "+cls:"");}
-$("frm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  const d=data();
-  if(!d.tajuk){setStatus("Isi nama program dahulu.","err");$("nama").focus();return;}
-  if(!d.edaran.length){setStatus("Pilih sekurang-kurangnya seorang staf untuk senarai edaran.","err");return;}
+const safeName = s => s.replace(/[\\\/:*?"<>|]+/g,"").replace(/\s+/g," ").trim().slice(0,90);
+async function saveFile(blob,nm,setStatus,btn){
   const standalone=!(window.claude && window.claude.use);
   if(!downloads && !standalone){setStatus("Muat turun tak tersedia dalam paparan ini. Buka halaman ini di claude.ai.","err");return;}
-  const btn=$("jana"); btn.disabled=true; setStatus("Menyediakan fail...");
+  btn.disabled=true; setStatus("Menyediakan fail...");
   try{
-    const blob=await buildDocx(d);
-    const nm=("Memo "+plain($("nama").value).slice(0,60)).replace(/[\\\/:*?"<>|]+/g,"").replace(/\s+/g," ").trim()+".docx";
     if(downloads){ await downloads.save({filename:nm,data:blob}); }
     else { const u=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=u; a.download=nm; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),4000); }
     setStatus("Fail disimpan: "+nm,"ok");
@@ -585,12 +678,247 @@ $("frm").addEventListener("submit",async e=>{
     else if(c==="rate_limited") setStatus("Ada tetingkap simpan masih terbuka. Cuba lagi sebentar.","err");
     else setStatus("Fail tak dapat disimpan ("+(c||"ralat")+").","err");
   }finally{btn.disabled=false;}
+}
+const statusFn = id => (t,cls)=>{const s=$(id);s.textContent=t;s.className="status"+(cls?" "+cls:"");};
+
+$("frm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const st=statusFn("status"), d=data();
+  if(!d.tajuk){st("Isi nama program dahulu.","err");$("nama").focus();return;}
+  if(!d.edaran.length){st("Pilih sekurang-kurangnya seorang staf untuk senarai edaran.","err");return;}
+  const blob=await buildDocx(buildDocXML(d),true);
+  await saveFile(blob, safeName("Memo "+plain($("nama").value))+".docx", st, $("jana"));
 });
 
-// ---------- simpan tetapan & kemas kini ----------
-document.addEventListener("input",e=>{ if(SETTINGS.includes(e.target.id)) store.set("f:"+e.target.id,e.target.value); if(e.target.id!=="cari"&&e.target.id!=="masterTxt") update(); });
-document.addEventListener("change",e=>{ if(SETTINGS.includes(e.target.id)) store.set("f:"+e.target.id,e.target.value); update(); });
-renderStaff(); update();
+// ===================================================== MINIT
+const T = (t="Makluman",o="") => ({t,o});
+const DEFAULT_MINIT = {
+  nama:"Mesyuarat Jawatankuasa Peperiksaan", bil:"5/2026", tarikh:"2026-10-23", masa:"09:30", tempat:"Bilik Mesyuarat",
+  hadir:[
+    {n:"En. Mohammad Azwan Bin Ja'afar",j:"Pengarah (Pengerusi)"},
+    {n:"En. Mohd Hanafi Bin Hashim",j:"Timbalan Pengarah Akademik"},
+    {n:"Puan Hajah Siti Noraini Binti Deraman",j:"Pegawai Peperiksaan"},
+    {n:"En. Muhamad Hafiz Bin Abd Razak",j:"Ketua Program Teknologi Elektrik"},
+    {n:"Cik Nor Fazlina Binti Harun",j:"Ketua Program Teknologi Senibina"},
+    {n:"En. Azman Bin Md Salleh",j:"Ketua Program Teknologi Pembuatan"},
+    {n:"Pn. Nurul Aina Ulmardhiah Bt Zainal Abidin",j:"Penolong Ketua Program Kulinari"},
+    {n:"Puan Azsyanti Binti Ibrahim",j:"Ketua Program Operasi Perhotelan"},
+    {n:"Puan Farhana Binti Anaspekri",j:"Ketua Unit Pengajian Am"},
+    {n:"Encik Shahrizal Bin M. Yassin",j:"Pegawai Perhubungan Industri dan Alumni"},
+    {n:"Puan Umaimah Nasuuha Binti Mohd Ghani",j:"Pegawai Psikologi dan Kerjaya"},
+    {n:"Encik Hairulnizam Bin Abdul Hamid",j:"Pegawai Pembangunan Pelajar"},
+    {n:"Puan Ida Fadliza Binti Abu Zarin",j:"Setiausaha/Pencatat Minit"}],
+  absen:[{n:"En. Tajul Azmi Bin Abdul Ghani",j:"Ketua Program Kulinari"}],
+  perutusan:{text:"Pengerusi memulakan majlis dengan bacaan *Al-Fatihah* dan doa. Pengerusi mengucapkan ribuan terima kasih kepada semua ahli mesyuarat yang hadir.",tind:T(),points:[]},
+  sah:{bil:"04/2026",cadang:"En. Muhamad Hafiz Bin Abd Razak",sokong:"Puan Farhana Binti Anaspekri",tind:T()},
+  berbangkit:{text:"",tind:T(""),points:[
+    {p:"Peperiksaan akhir khas",d:"",tind:T("Tindakan","Pegawai Peperiksaan")},
+    {p:"Pensyarah diingatkan untuk melengkapkan Penilaian Berterusan. Tarikh akhir 16 November 2026.",d:"",tind:T("Tindakan","Ketua Program / Unit")}]},
+  extra:[{title:"Pembentangan Lembaran Markah Latihan Industri (LI)",text:"Mesyuarat:-",tind:T(""),points:[
+    {p:"Mengambil maklum",d:"STE4A: 12 orang pelajar, 12 orang kedudukan baik. HPNM tertinggi 3.95, terendah 3.73.",tind:T("")}]}],
+  hal:{text:"",tind:T(""),points:[]},
+  tutup:"10:00",
+  sign:[{n:"Ida Fadliza Bt Abu Zarin",j:"Setiausaha / Pencatat Minit"},{n:"Hajah Siti Noraini Bt Deraman",j:"Pegawai Peperiksaan"},{n:"Mohammad Azwan Bin Ja'afar",j:"Pengarah"}]
+};
+const clone = o => JSON.parse(JSON.stringify(o));
+let M = store.get("minit", null) || clone(DEFAULT_MINIT);
+let JAW = store.get("jaw", {});
+M.hadir.concat(M.absen).forEach(p=>{ if(p.n && p.j && !JAW[p.n]) JAW[p.n]=p.j; });
+const saveM = () => store.set("minit",M);
+
+function getPath(o,path){ return path.split(".").reduce((a,k)=>a==null?a:a[k],o); }
+function setPath(o,path,v){ const ks=path.split("."); const last=ks.pop(); const t=ks.reduce((a,k)=>a[k],o); t[last]=v; }
+
+const kolejTitle = () => titleCase(lines($("kepala").value)[0]||"Kolej Komuniti Kuantan");
+const jkName = () => M.nama.trim().replace(/^mesyuarat\s+/i,"");
+const signName = n => sortKey(n||"").toUpperCase();
+const tindLabel = t => !t||!t.t ? "" : (t.t==="Tindakan" ? "Tindakan : "+(t.o||"") : "Makluman");
+function sahText(){
+  const s=M.sah;
+  return "Minit "+M.nama.trim()+" "+kolejTitle()+" Bil. "+(s.bil||"…")+" dicadangkan untuk pengesahan oleh "+(s.cadang||"…")+" dan disokong oleh "+(s.sokong||"…")+" dengan pindaan sekiranya ada serta tindakan dalam minit mesyuarat yang lepas dibawa ke minit mesyuarat pada hari ini.";
+}
+function sections(){
+  const out=[
+    {title:"Perutusan Pengerusi", text:M.perutusan.text, tind:M.perutusan.tind, points:M.perutusan.points},
+    {title:"Pengesahan Minit Mesyuarat Bil "+(M.sah.bil||""), text:sahText(), tind:M.sah.tind, points:[]},
+    {title:"Perkara Berbangkit", text:M.berbangkit.text, tind:M.berbangkit.tind, points:M.berbangkit.points, emptyTiada:true}
+  ];
+  M.extra.forEach(s=>out.push({title:s.title||"(Tajuk agenda)", text:s.text, tind:s.tind, points:s.points}));
+  out.push({title:"Hal-hal Lain", text:M.hal.text, tind:M.hal.tind, points:M.hal.points, emptyTiada:true});
+  out.push({title:"Penutup", text:M.tutup?"Mesyuarat ditangguhkan pada jam "+masaPenuh(M.tutup):"", tind:T(""), points:[]});
+  return out;
+}
+
+// ----- borang minit (dibina semula bila struktur berubah) -----
+const opt = (v,cur,label) => `<option value="${v}"${v===cur?" selected":""}>${label||v||"Tiada"}</option>`;
+function tindHTML(path,t){
+  return `<div class="tind"><select data-path="${path}.t" data-rerender="1">${opt("Makluman",t.t)}${opt("Tindakan",t.t)}${opt("",t.t,"Tiada")}</select>${t.t==="Tindakan"?`<input type="text" data-path="${path}.o" value="${esc(t.o)}" placeholder="Tindakan oleh (contoh: Ketua Program / Unit)">`:"<span></span>"}</div>`;
+}
+const mvBtns = (list,i,n) => `<div class="mv"><button type="button" class="sm" data-act="up" data-list="${list}" data-i="${i}" ${i===0?"disabled":""} aria-label="Naik">↑</button><button type="button" class="sm" data-act="down" data-list="${list}" data-i="${i}" ${i===n-1?"disabled":""} aria-label="Turun">↓</button><button type="button" class="sm danger" data-act="del" data-list="${list}" data-i="${i}" aria-label="Buang">✕</button></div>`;
+function pointsHTML(base,pts){
+  return pts.map((p,i)=>`<div class="pt">
+    <div class="pt-head"><span class="lt">${letter(i)}</span><input type="text" data-path="${base}.${i}.p" value="${esc(p.p)}" placeholder="Perkara">${mvBtns(base,i,pts.length)}</div>
+    <textarea rows="2" data-path="${base}.${i}.d" placeholder="Butiran (pilihan)">${esc(p.d)}</textarea>
+    ${tindHTML(base+"."+i+".tind",p.tind)}
+  </div>`).join("") + `<button type="button" class="sm ghost" data-act="addpt" data-list="${base}">+ Tambah perkara</button>`;
+}
+function renderMinitForm(){
+  document.querySelectorAll('#frmMinit [data-path]').forEach(el=>{ if(el.closest("#secs,#signs,#hadirList,#absenList")) return; const v=getPath(M,el.dataset.path); el.value=v==null?"":v; });
+  const ppl=(key)=>{ const off = key==="absen"?M.hadir.length:0; const arr=M[key];
+    return arr.length? arr.map((p,i)=>`<div class="person"><span class="n">${off+i+1}.</span><input type="text" list="staffList" data-path="${key}.${i}.n" value="${esc(p.n)}" placeholder="Nama"><input type="text" class="jw" data-path="${key}.${i}.j" value="${esc(p.j)}" placeholder="Jawatan">${mvBtns(key,i,arr.length)}</div>`).join("") : `<p class="hint">Tiada.</p>`; };
+  $("hadirList").innerHTML=ppl("hadir"); $("absenList").innerHTML=ppl("absen");
+  const hadirOpts = M.hadir.map(p=>`<option value="${esc(p.n)}"></option>`).join("");
+  let h=`<datalist id="hadirNames">${hadirOpts}</datalist>`;
+  h+=`<div class="sec"><div class="sec-head"><span class="rn">I.</span><h3>Perutusan Pengerusi</h3></div>
+      <textarea rows="3" data-path="perutusan.text">${esc(M.perutusan.text)}</textarea>${tindHTML("perutusan.tind",M.perutusan.tind)}</div>`;
+  h+=`<div class="sec"><div class="sec-head"><span class="rn">II.</span><h3>Pengesahan Minit</h3></div>
+      <div class="row"><label class="f">Bil minit lepas<input type="text" data-path="sah.bil" value="${esc(M.sah.bil)}" placeholder="04/2026"></label>
+      <label class="f">Dicadangkan oleh<input type="text" list="hadirNames" data-path="sah.cadang" value="${esc(M.sah.cadang)}"></label>
+      <label class="f">Disokong oleh<input type="text" list="hadirNames" data-path="sah.sokong" value="${esc(M.sah.sokong)}"></label></div>
+      <p class="autotext" id="sahPrev">${esc(sahText())}</p>${tindHTML("sah.tind",M.sah.tind)}</div>`;
+  h+=`<div class="sec"><div class="sec-head"><span class="rn">III.</span><h3>Perkara Berbangkit</h3></div>${pointsHTML("berbangkit.points",M.berbangkit.points)}</div>`;
+  M.extra.forEach((s,k)=>{
+    h+=`<div class="sec"><div class="sec-head"><span class="rn">${roman(4+k).toUpperCase()}.</span><input type="text" data-path="extra.${k}.title" value="${esc(s.title)}" placeholder="Tajuk agenda" style="flex:1;min-width:0">${mvBtns("extra",k,M.extra.length)}</div>
+      <textarea rows="2" data-path="extra.${k}.text" placeholder="Catatan pembuka (pilihan), contoh: Mesyuarat:-">${esc(s.text)}</textarea>
+      ${tindHTML("extra."+k+".tind",s.tind)}
+      ${pointsHTML("extra."+k+".points",s.points)}</div>`;
+  });
+  const hr=roman(4+M.extra.length).toUpperCase();
+  h+=`<div class="sec"><div class="sec-head"><span class="rn">${hr}.</span><h3>Hal-hal Lain</h3></div><p class="hint">Kosongkan untuk tulis "Tiada".</p>${pointsHTML("hal.points",M.hal.points)}</div>`;
+  $("secs").innerHTML=h;
+  const lbl=["Disediakan oleh","Disemak oleh","Disahkan oleh"];
+  $("signs").innerHTML=M.sign.map((s,i)=>`<div class="row"><label class="f">${lbl[i]}<input type="text" list="staffList" data-path="sign.${i}.n" value="${esc(s.n)}"></label><label class="f">Jawatan<input type="text" data-path="sign.${i}.j" value="${esc(s.j)}"></label></div>`).join("");
+}
+$("frmMinit").addEventListener("input",e=>{
+  const el=e.target; const p=el.dataset.path; if(!p) return;
+  setPath(M,p,el.value);
+  const m=p.match(/^(hadir|absen)\.(\d+)\.(n|j)$/);
+  if(m){ const row=M[m[1]][+m[2]];
+    if(m[3]==="j" && row.n) JAW[row.n]=row.j;
+    if(m[3]==="n" && !row.j && JAW[row.n]){ row.j=JAW[row.n]; const jw=el.parentElement.querySelector(".jw"); if(jw) jw.value=row.j; }
+    store.set("jaw",JAW);
+    if(m[1]==="hadir"){ const dl=document.getElementById("hadirNames"); if(dl) dl.innerHTML=M.hadir.map(x=>`<option value="${esc(x.n)}"></option>`).join(""); }
+  }
+  const sp=document.getElementById("sahPrev"); if(sp) sp.textContent=sahText();
+  saveM(); updateMinit();
+});
+$("frmMinit").addEventListener("change",e=>{ if(e.target.dataset.rerender){ setPath(M,e.target.dataset.path,e.target.value); saveM(); renderMinitForm(); updateMinit(); } });
+$("frmMinit").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-act]"); if(!b) return;
+  const arr=getPath(M,b.dataset.list); const i=+b.dataset.i;
+  if(b.dataset.act==="up"&&i>0) [arr[i-1],arr[i]]=[arr[i],arr[i-1]];
+  else if(b.dataset.act==="down"&&i<arr.length-1) [arr[i+1],arr[i]]=[arr[i],arr[i+1]];
+  else if(b.dataset.act==="del") arr.splice(i,1);
+  else if(b.dataset.act==="addpt") arr.push({p:"",d:"",tind:T("")});
+  saveM(); renderMinitForm(); updateMinit();
+});
+function addPerson(key,inputId){
+  const v=$(inputId).value.trim(); if(!v) return;
+  M[key].push({n:v,j:JAW[v]||""}); $(inputId).value=""; saveM(); renderMinitForm(); updateMinit();
+}
+$("addHadirBtn").addEventListener("click",()=>addPerson("hadir","addHadir"));
+$("addAbsenBtn").addEventListener("click",()=>addPerson("absen","addAbsen"));
+["addHadir","addAbsen"].forEach(id=>$(id).addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); addPerson(id==="addHadir"?"hadir":"absen",id); } }));
+$("addSec").addEventListener("click",()=>{ M.extra.push({title:"",text:"",tind:T(""),points:[]}); saveM(); renderMinitForm(); updateMinit(); });
+$("dariMemo").addEventListener("click",()=>{
+  const nm=plain($("nama").value).trim().replace(/\s+/g," ");
+  const bm=nm.match(/\bBil\.?\s*([0-9]+\s*\/\s*[0-9]{4}|\S+)/i);
+  if(bm) M.bil=bm[1].replace(/\s+/g,"").replace(/^0+(\d)/,"$1");
+  M.nama=nm.replace(/\s*\bBil\.?\s*\S+\s*$/i,"").replace(new RegExp("\\s*"+kolejTitle()+"\\s*$","i"),"").trim();
+  M.tarikh=$("tprog").value; M.masa=$("mula").value; M.tempat=$("tempat").value.trim();
+  const sel=data().edaran.map(s=>{ const mm=s.match(/^(.*?)\s*\(([^)]*)\)\s*$/); if(mm){ if(!JAW[mm[1]]) JAW[mm[1]]=mm[2]; return mm[1]; } return s; });
+  if(sel.length){ M.hadir=sel.map(n=>({n,j:JAW[n]||""})); M.absen=[]; }
+  store.set("jaw",JAW); saveM(); renderMinitForm(); updateMinit();
+  statusFn("statusMinit")(sel.length?"Butiran dan "+sel.length+" nama disalin dari memo.":"Butiran disalin. Tiada staf dipilih dalam memo, jadi senarai hadir dikekalkan.","ok");
+});
+let resetArmed=false;
+$("resetMinit").addEventListener("click",()=>{
+  if(!resetArmed){ resetArmed=true; $("resetMinit").textContent="Ya, kosongkan minit"; $("resetHint").textContent="Semua kandungan minit akan dipadam."; setTimeout(()=>{resetArmed=false;$("resetMinit").textContent="Mula minit baharu";$("resetHint").textContent="";},5000); return; }
+  resetArmed=false; $("resetMinit").textContent="Mula minit baharu"; $("resetHint").textContent="";
+  const keep={sign:M.sign, nama:M.nama, tempat:M.tempat};
+  M={nama:keep.nama,bil:"",tarikh:todayISO(),masa:"",tempat:keep.tempat,hadir:[],absen:[],
+     perutusan:clone(DEFAULT_MINIT.perutusan),sah:{bil:"",cadang:"",sokong:"",tind:T()},
+     berbangkit:{text:"",tind:T(""),points:[]},extra:[],hal:{text:"",tind:T(""),points:[]},tutup:"",sign:keep.sign};
+  saveM(); renderMinitForm(); updateMinit();
+});
+
+// ----- pratonton minit -----
+function updateMinit(){
+  const K=kolejTitle(), secs=sections();
+  const ppl=(arr,off)=>`<ol class="m-ppl">${arr.map((p,i)=>`<li><span>${off+i+1}.</span><div>${esc(p.n)}<em>${esc(p.j)}</em></div></li>`).join("")}</ol>`;
+  let h=`<div class="paper">
+    <div class="m-title">${esc(("Minit "+M.nama).toUpperCase())}<br>${esc(K.toUpperCase())}<br>BIL ${esc(M.bil)}</div>
+    <div class="m-det"><span>TARIKH</span><span>:</span><b>${esc(tarikhHari(parseISO(M.tarikh)))}</b><span>TEMPAT</span><span>:</span><b>${esc(M.tempat)}</b><span>MASA</span><span>:</span><b>${esc(masaPenuh(M.masa))}</b></div>
+    <div class="m-h">HADIR</div>${M.hadir.length?ppl(M.hadir,0):'<p class="m-empty">Belum ada nama</p>'}
+    ${M.absen.length?`<div class="m-h">TIDAK HADIR BERSEBAB</div>${ppl(M.absen,M.hadir.length)}`:""}`;
+  secs.forEach((s,k)=>{
+    const empty=!lines(s.text).length && !s.points.length;
+    h+=`<div class="m-sec"><h4><span>${roman(k+1).toUpperCase()}.</span><u>${esc(s.title.toUpperCase())}</u></h4>
+      <div class="m-body">${lines(s.text).map(l=>`<p>${richHTML(l)}</p>`).join("")}${empty&&s.emptyTiada?"<p>Tiada</p>":""}</div>
+      ${tindLabel(s.tind)?`<div class="m-tind">${esc(tindLabel(s.tind))}</div>`:""}
+      ${s.points.length?`<div class="m-pts">${s.points.map((p,i)=>`<div class="m-pt"><span>${letter(i)}</span><div><p>${richHTML(p.p)}</p>${lines(p.d).map(l=>`<p>${richHTML(l)}</p>`).join("")}</div></div>${tindLabel(p.tind)?`<div class="m-tind">${esc(tindLabel(p.tind))}</div>`:""}`).join("")}</div>`:""}
+    </div>`;
+  });
+  const lbl=["Disediakan oleh:","Disemak oleh:","Disahkan oleh:"], jk=jkName();
+  h+=`<div class="m-sign">${M.sign.map((s,i)=>`<div>${lbl[i]}<div class="gap"></div><strong>(${esc(signName(s.n))})</strong><br>${esc(s.j)}${jk?"<br>"+esc(jk):""}<br>${esc(K)}<br>Tarikh:</div>`).join("")}</div></div>`;
+  $("previewMinit").innerHTML=h;
+}
+
+// ----- docx minit -----
+function buildMinitXML(){
+  const K=kolejTitle(), secs=sections(); let b="";
+  [("Minit "+M.nama).toUpperCase(), K.toUpperCase(), "BIL "+M.bil].forEach((t,i)=>{ b+=P(R(t,{b:true}),{align:"center",after:i===2?480:0}); });
+  [["TARIKH",tarikhHari(parseISO(M.tarikh))],["TEMPAT",M.tempat],["MASA",masaPenuh(M.masa)]].forEach(([k,v],i)=>{
+    b+=P(R(k)+TAB+R(":")+TAB+R(v,{b:true}),{after:i===2?360:0,tabs:[["left",2400],["left",3200]],ind:[3200,3200]});
+  });
+  const person=(p,num,last)=>P(R(num+".")+TAB+R(p.n),{after:0,keep:1,tabs:[["left",1080]],ind:[1080,360]})+P(R(p.j,{i:true}),{after:last?240:200,ind:[1080,0]});
+  b+=P(R("HADIR",{b:true}),{after:200,keep:1});
+  M.hadir.forEach((p,i)=>{ b+=person(p,i+1,i===M.hadir.length-1); });
+  if(M.absen.length){
+    b+=P(R("TIDAK HADIR BERSEBAB",{b:true}),{before:120,after:200,keep:1});
+    M.absen.forEach((p,i)=>{ b+=person(p,M.hadir.length+i+1,i===M.absen.length-1); });
+  }
+  const tindP = t => P(R(tindLabel(t),{b:true}),{align:"right",after:200});
+  secs.forEach((s,k)=>{
+    b+=P(R(roman(k+1).toUpperCase()+".",{b:true})+TAB+R(s.title.toUpperCase(),{b:true,u:true}),{before:360,after:200,keep:1,tabs:[["left",720]],ind:[720,720]});
+    const tl=lines(s.text), empty=!tl.length&&!s.points.length;
+    tl.forEach((l,i)=>{ b+=P(richRuns(l),{ind:[720,0],align:"both",after:i===tl.length-1&&!tindLabel(s.tind)?160:60,keep:s.points.length?1:0}); });
+    if(empty&&s.emptyTiada) b+=P(R("Tiada"),{ind:[720,0],after:160});
+    if(tindLabel(s.tind)) b+=tindP(s.tind);
+    s.points.forEach((p,i)=>{
+      const dl=lines(p.d), hasT=!!tindLabel(p.tind);
+      b+=P(R(letter(i))+TAB+richRuns(p.p),{tabs:[["left",1440]],ind:[1440,360],align:"both",after:dl.length||hasT?40:160});
+      dl.forEach((l,j)=>{ b+=P(richRuns(l),{ind:[1440,0],align:"both",after:j===dl.length-1&&!hasT?160:40}); });
+      if(hasT) b+=tindP(p.tind);
+    });
+  });
+  const lbl=["Disediakan oleh:","Disemak oleh:","Disahkan oleh:"], jk=jkName();
+  const signCell=(i)=>{ const s=M.sign[i]; let c=P(R(lbl[i]),{after:0})+P("",{after:0})+P("",{after:0})+P("",{after:0});
+    c+=P(R("("+signName(s.n)+")",{b:true}),{after:0})+P(R(s.j),{after:0});
+    if(jk) c+=P(R(jk),{after:0});
+    c+=P(R(K),{after:0})+P(R("Tarikh:"),{after:0}); return c; };
+  const w=[4150,4150];
+  b+=P("",{after:480});
+  b+=table(w,[[cell(w[0],signCell(0),{nob:1}),cell(w[1],signCell(1),{nob:1})],
+              [cell(w[0],P("",{after:600}),{nob:1}),cell(w[1],"",{nob:1})],
+              [cell(w[0],signCell(2),{nob:1}),cell(w[1],"",{nob:1})]],{nob:1,ind:620});
+  return docWrap(b,[1440,1440]);
+}
+$("frmMinit").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const st=statusFn("statusMinit");
+  if(!M.nama.trim()){st("Isi nama mesyuarat dahulu.","err");return;}
+  if(!M.hadir.length){st("Senarai hadir masih kosong.","err");return;}
+  const blob=await buildDocx(buildMinitXML(),false);
+  await saveFile(blob, safeName("Minit "+M.nama+" Bil "+M.bil.replace(/\//g,"-"))+".docx", st, $("janaMinit"));
+});
+
+// ===================================================== mula
+document.addEventListener("input",e=>{ if(e.target.closest("#frmMinit")) return; if(SETTINGS.includes(e.target.id)) store.set("f:"+e.target.id,e.target.value); if(e.target.id!=="cari"&&e.target.id!=="masterTxt"){ update(); if(e.target.id==="kepala") updateMinit(); } });
+document.addEventListener("change",e=>{ if(e.target.closest("#frmMinit")) return; if(SETTINGS.includes(e.target.id)) store.set("f:"+e.target.id,e.target.value); update(); });
+renderStaff(); update(); renderMinitForm(); updateMinit();
+const h=(location.hash||"").slice(1);
+setTab(h==="minit"||h==="memo" ? h : store.get("tab","memo"));
 })();
 </script>
 

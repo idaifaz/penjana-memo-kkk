@@ -3,55 +3,69 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Penjana Memo KKK</title>
+<link rel="icon" href="memix-logo.svg" type="image/svg+xml">
+<title>MemiX</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Sora:wght@600;700&display=swap">
 <style>
 /* Layout: tab Memo / Minit di atas, borang di kiri, pratonton kertas A4 di kanan (bertindan di telefon) */
 :root{
-  --bg:#eef0f4; --surface:#ffffff; --ink:#1b2233; --muted:#5b6478; --line:#d5d9e2;
-  --accent:#1d3f8f; --accent-ink:#ffffff; --accent-soft:#e3e9f7;
+  --bg:#eef2f8; --surface:#ffffff; --field:#f7f9fc; --ink:#1b2233; --muted:#5b6478; --line:#d6dce8;
+  --c-memo:#2346a8; --c-memo-soft:#e6ecfa; --c-minit:#0b7f72; --c-minit-soft:#dff2ee;
+  --accent-ink:#ffffff;
+  --navy:#12204a; --hdr-ink:#ffffff; --hdr-mute:#b9c5e8; --hdr-line:rgba(255,255,255,.16); --hdr-glass:rgba(255,255,255,.07);
   --ok:#1f7a4d; --err:#b3261e;
   --paper:#ffffff; --paper-ink:#111111; --paper-line:#333333; --paper-green:#0a9a45; --paper-mute:#888888;
   --f-ui:"Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-brand:"Sora", "Public Sans", system-ui, sans-serif;
   --f-doc:Arial, "Helvetica Neue", Helvetica, sans-serif;
   --f-head:Calibri, Carlito, "Segoe UI", Arial, sans-serif;
   --f-memo:Cambria, Caladea, Georgia, serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#12151c; --surface:#1a1f29; --ink:#e6e9f0; --muted:#9aa3b5; --line:#2c3342;
-  --accent:#8fb0ff; --accent-ink:#0d1424; --accent-soft:#223154;
+  --bg:#0f131b; --surface:#171c26; --field:#121722; --ink:#e6e9f0; --muted:#9aa3b5; --line:#2a3242;
+  --c-memo:#8fb0ff; --c-memo-soft:#1d2a4a; --c-minit:#5fd4c2; --c-minit-soft:#143934;
+  --accent-ink:#0d1424; --navy:#0b1430; --hdr-mute:#93a1c9;
   --ok:#5fcf95; --err:#ff8a80; color-scheme:dark;
 }}
 :root[data-theme="dark"]{
-  --bg:#12151c; --surface:#1a1f29; --ink:#e6e9f0; --muted:#9aa3b5; --line:#2c3342;
-  --accent:#8fb0ff; --accent-ink:#0d1424; --accent-soft:#223154;
+  --bg:#0f131b; --surface:#171c26; --field:#121722; --ink:#e6e9f0; --muted:#9aa3b5; --line:#2a3242;
+  --c-memo:#8fb0ff; --c-memo-soft:#1d2a4a; --c-minit:#5fd4c2; --c-minit-soft:#143934;
+  --accent-ink:#0d1424; --navy:#0b1430; --hdr-mute:#93a1c9;
   --ok:#5fcf95; --err:#ff8a80; color-scheme:dark;
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:14px;line-height:1.5;
+body{--accent:var(--c-memo);--accent-soft:var(--c-memo-soft);background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:14px;line-height:1.5;
   padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 40px}
 .wrap{max-width:1260px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
-header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px}
-header.top h1{margin:0;font-size:22px;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
-.tabs{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:3px;gap:3px}
-.tabs button{border:0;background:transparent;padding:7px 16px;border-radius:7px;color:var(--muted)}
-.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+body[data-sys="minit"]{--accent:var(--c-minit);--accent-soft:var(--c-minit-soft)}
+header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 16px;background:var(--navy);color:var(--hdr-ink);border-radius:14px;padding:14px 18px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand svg{width:44px;height:44px;flex:none}
+.brand h1{margin:0;font-family:var(--f-brand);font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.brand h1 span{color:#5fd4c2}
+.brand .sub{font-size:12.5px;color:var(--hdr-mute);margin-top:4px}
+.tabs{display:inline-flex;background:var(--hdr-glass);border:1px solid var(--hdr-line);border-radius:10px;padding:3px;gap:3px}
+.tabs button{border:0;background:transparent;padding:8px 16px;border-radius:8px;color:var(--hdr-mute)}
+.tabs button:hover{color:var(--hdr-ink)}
+.tabs button[aria-selected="true"]{background:var(--hdr-ink);color:#12204a}
 .grid{display:grid;grid-template-columns:1fr;gap:18px;align-items:start}
 @media (min-width:1000px){.grid{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr)} .previewcol{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);max-height:calc(100vh - 24px);overflow:auto}}
 .leftcol{display:flex;flex-direction:column;gap:18px;min-width:0}
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
-.panel h2{margin:0;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0;box-shadow:0 1px 2px rgba(18,32,74,.05)}
+.panel h2{margin:-18px -18px 0;padding:11px 18px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border-bottom:1px solid var(--line);border-radius:12px 12px 0 0}
 .panel h3{margin:0;font-size:13px;font-weight:700}
 .form{display:flex;flex-direction:column;gap:18px;min-width:0}
 .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-label.f{display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:13px;min-width:0}
+label.f{display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:13px;min-width:0;color:var(--ink)}
 label.f small{font-weight:400;color:var(--muted);font-size:12px}
 label.chk{display:flex;align-items:center;gap:8px;font-weight:500;font-size:13px}
 label.chk input{accent-color:var(--accent);width:16px;height:16px}
 input[type=text],input[type=date],input[type=time],input[type=search],select,textarea{
-  font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:8px 10px;width:100%;min-width:0}
+  font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;min-width:0;transition:border-color .15s,box-shadow .15s}
+input[type=text]:hover,input[type=date]:hover,input[type=time]:hover,input[type=search]:hover,select:hover,textarea:hover{border-color:var(--accent)}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);outline:none}
 textarea{resize:vertical;min-height:60px}
 input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,.staff input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .hint{color:var(--muted);font-size:12px;margin:0}
@@ -60,12 +74,12 @@ button:hover{border-color:var(--accent)}
 button.sm{padding:4px 9px;font-size:12px}
 button.ghost{border-style:dashed;color:var(--accent)}
 button.danger:hover{border-color:var(--err);color:var(--err)}
-.btn-main{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);padding:12px 18px;font-size:15px;width:100%}
+.btn-main{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);padding:13px 18px;font-size:15px;width:100%;border-radius:10px;box-shadow:0 2px 6px rgba(18,32,74,.18)}
 .btn-main:hover{filter:brightness(1.07)}
 .btn-main:disabled{opacity:.6;cursor:progress}
 .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .count{margin-left:auto;font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:3px 10px;border-radius:999px;font-variant-numeric:tabular-nums}
-.staff{list-style:none;margin:0;padding:4px;border:1px solid var(--line);border-radius:8px;max-height:320px;overflow:auto;background:var(--bg)}
+.staff{list-style:none;margin:0;padding:4px;border:1px solid var(--line);border-radius:8px;max-height:320px;overflow:auto;background:var(--field)}
 .staff li label{display:flex;gap:10px;align-items:center;padding:6px 8px;border-radius:6px;cursor:pointer}
 .staff li label:hover{background:var(--accent-soft)}
 .staff input{accent-color:var(--accent);width:16px;height:16px;flex:none}
@@ -84,18 +98,18 @@ details.set .inner{display:flex;flex-direction:column;gap:12px}
 .person input{padding:6px 8px}
 .mv{display:flex;gap:3px}
 @media (max-width:560px){.person{grid-template-columns:20px minmax(0,1fr) auto}.person input.jw{grid-column:2 / 3}.person .mv{grid-row:1 / 3;grid-column:3}}
-.pt{border:1px solid var(--line);border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.pt{border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px;background:var(--surface)}
 .pt-head{display:flex;gap:8px;align-items:center}
 .pt-head .lt{font-weight:700;color:var(--accent);width:22px;flex:none}
 .pt-head input{flex:1;min-width:0}
 .tind{display:grid;grid-template-columns:minmax(120px,160px) minmax(0,1fr);gap:8px}
 .sec{border-left:3px solid var(--accent-soft);padding-left:12px;display:flex;flex-direction:column;gap:10px}
 .sec-head{display:flex;gap:8px;align-items:center}
-.sec-head .rn{font-weight:700;min-width:30px}
-.autotext{font-size:12.5px;color:var(--muted);background:var(--bg);border:1px dashed var(--line);border-radius:7px;padding:8px 10px;margin:0}
+.sec-head .rn{font-weight:700;min-width:34px;height:26px;display:inline-grid;place-items:center;border-radius:7px;background:var(--accent-soft);color:var(--accent);font-size:12px}
+.autotext{font-size:12.5px;color:var(--muted);background:var(--field);border:1px dashed var(--line);border-radius:7px;padding:8px 10px;margin:0}
 
 /* Pratonton kertas (sentiasa putih, macam kertas sebenar) */
-.p-label{font-size:11px;color:var(--muted);margin:0 0 6px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.p-label{font-size:11px;color:var(--accent);margin:0 0 6px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
 .paperbox{overflow-x:auto;border-radius:8px}
 .paper{background:var(--paper);color:var(--paper-ink);font-family:var(--f-doc);font-size:11.5px;line-height:1.45;
   padding:30px 36px;min-width:540px;box-shadow:0 1px 3px rgba(0,0,0,.18);border-radius:3px}
@@ -150,7 +164,7 @@ table.p-tbl td.body{padding:12px 12px 10px;vertical-align:top}
 <body>
 <div class="wrap">
   <header class="top">
-    <h1 id="appTitle">Penjana Memo KKK</h1>
+    <div class="brand"><svg viewBox="0 0 48 48" role="img" aria-label="Logo MemiX"><rect width="48" height="48" rx="12" fill="#2f5bd3"/><path d="M15 9h13l7 7v19a3 3 0 0 1-3 3H15a3 3 0 0 1-3-3V12a3 3 0 0 1 3-3z" fill="#5fd4c2" transform="rotate(-9 24 24)"/><path d="M18 12h12l6 6v19a3 3 0 0 1-3 3H18a3 3 0 0 1-3-3V15a3 3 0 0 1 3-3z" fill="#ffffff"/><path d="M30 12v4a2 2 0 0 0 2 2h4z" fill="#c9d6f7"/><path d="M19.5 21h9M19.5 25h11" stroke="#12204a" stroke-width="2" stroke-linecap="round"/><path d="M26.5 30.5l5 5M31.5 30.5l-5 5" stroke="#0b7f72" stroke-width="2.6" stroke-linecap="round"/></svg><div><h1>Memi<span>X</span></h1><div class="sub" id="appSub">Penjana memo rasmi</div></div></div>
     <div class="tabs" role="tablist">
       <button type="button" role="tab" id="tabMemo" aria-selected="true">Memo</button>
       <button type="button" role="tab" id="tabMinit" aria-selected="false">Minit mesyuarat</button>
@@ -435,8 +449,8 @@ function setTab(t){
   const minit=t==="minit";
   $("tabMemo").setAttribute("aria-selected",String(!minit)); $("tabMinit").setAttribute("aria-selected",String(minit));
   $("frm").hidden=minit; $("frmMinit").hidden=!minit; $("preview").hidden=minit; $("previewMinit").hidden=!minit; $("setPanel").hidden=minit;
-  const nm = minit ? "Penjana Minit Mesyuarat KKK" : "Penjana Memo KKK";
-  $("appTitle").textContent=nm; document.title=nm; window.scrollTo(0,0);
+  $("appSub").textContent = minit ? "Penjana minit mesyuarat" : "Penjana memo rasmi";
+  document.body.dataset.sys = minit ? "minit" : "memo"; window.scrollTo(0,0);
   store.set("tab",t);
 }
 $("tabMemo").addEventListener("click",()=>setTab("memo"));

@@ -1,4 +1,6 @@
-# Penjana Memo KKK
+# MemiX
+
+![MemiX](memix-logo.svg)
 
 Web app satu halaman untuk menjana memo rasmi dan minit mesyuarat Kolej Komuniti Kuantan dalam format Word (.docx). Dua tab: Memo dan Minit mesyuarat, masing-masing dengan pratonton.
 

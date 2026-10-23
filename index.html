@@ -41,7 +41,7 @@ body{--accent:var(--c-memo);--accent-soft:var(--c-memo-soft);background:var(--bg
 .wrap{max-width:1260px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
 body[data-sys="minit"]{--accent:var(--c-minit);--accent-soft:var(--c-minit-soft)}
 header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 16px;background:var(--navy);color:var(--hdr-ink);border-radius:14px;padding:14px 18px}
-.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand{display:flex;align-items:center;gap:12px;min-width:0;cursor:pointer}
 .brand svg{width:44px;height:44px;flex:none}
 .brand h1{margin:0;font-family:var(--f-brand);font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1}
 .brand h1 span{color:#5fd4c2}
@@ -160,6 +160,21 @@ table.p-tbl td.body{padding:12px 12px 10px;vertical-align:top}
 .m-empty{color:var(--paper-mute);font-style:italic}
 .credit{max-width:1260px;margin:28px auto 0;padding-top:14px;border-top:1px solid var(--line);text-align:center;font-size:12.5px;color:var(--muted)}
 .credit strong{color:var(--ink);font-weight:600}
+.welcome{display:flex;flex-direction:column;gap:20px;padding-block:24px 8px}
+.welcome-intro{max-width:620px}
+.welcome-intro h2{margin:0 0 6px;font-family:var(--f-brand);font-size:24px;letter-spacing:-.01em;text-wrap:balance}
+.welcome-intro p{margin:0;color:var(--muted);font-size:14.5px}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.choice{display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:left;padding:24px;border-radius:14px;border:1px solid var(--line);background:var(--surface);box-shadow:0 1px 2px rgba(18,32,74,.05);transition:border-color .15s,box-shadow .15s,transform .15s}
+.choice svg{width:52px;height:52px;padding:8px;border-radius:12px}
+.choice.memo{--c:var(--c-memo);--cs:var(--c-memo-soft)}
+.choice.minit{--c:var(--c-minit);--cs:var(--c-minit-soft)}
+.choice svg{color:var(--c);background:var(--cs)}
+.choice .ct{font-family:var(--f-brand);font-size:19px;font-weight:700;color:var(--ink)}
+.choice .cd{font-weight:400;color:var(--muted);font-size:13.5px;line-height:1.5}
+.choice .go{margin-top:6px;font-size:13px;font-weight:700;color:var(--c)}
+.choice:hover{border-color:var(--c);box-shadow:0 6px 18px rgba(18,32,74,.10);transform:translateY(-2px)}
+.choice:focus-visible{outline:2px solid var(--c);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -167,13 +182,34 @@ table.p-tbl td.body{padding:12px 12px 10px;vertical-align:top}
 <div class="wrap">
   <header class="top">
     <div class="brand"><svg viewBox="0 0 48 48" role="img" aria-label="Logo MemiX"><rect width="48" height="48" rx="12" fill="#2f5bd3"/><path d="M15 9h13l7 7v19a3 3 0 0 1-3 3H15a3 3 0 0 1-3-3V12a3 3 0 0 1 3-3z" fill="#5fd4c2" transform="rotate(-9 24 24)"/><path d="M18 12h12l6 6v19a3 3 0 0 1-3 3H18a3 3 0 0 1-3-3V15a3 3 0 0 1 3-3z" fill="#ffffff"/><path d="M30 12v4a2 2 0 0 0 2 2h4z" fill="#c9d6f7"/><path d="M19.5 21h9M19.5 25h11" stroke="#12204a" stroke-width="2" stroke-linecap="round"/><path d="M26.5 30.5l5 5M31.5 30.5l-5 5" stroke="#0b7f72" stroke-width="2.6" stroke-linecap="round"/></svg><div><h1>Memi<span>X</span></h1><div class="sub" id="appSub">Penjana Memo dan Minit Mesyuarat</div></div></div>
-    <div class="tabs" role="tablist">
+    <div class="tabs" role="tablist" id="tabsBar">
       <button type="button" role="tab" id="tabMemo" aria-selected="true">Memo</button>
       <button type="button" role="tab" id="tabMinit" aria-selected="false">Minit mesyuarat</button>
     </div>
   </header>
 
-  <div class="grid">
+  <section class="welcome" id="welcome" hidden>
+    <div class="welcome-intro">
+      <h2>Selamat datang ke MemiX</h2>
+      <p>Pilih dokumen yang anda mahu sediakan. Anda boleh tukar antara keduanya bila-bila masa melalui tab di atas.</p>
+    </div>
+    <div class="choices">
+      <button type="button" class="choice memo" id="pickMemo">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="10" y="6" width="28" height="36" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/><rect x="15" y="12" width="18" height="6" rx="1.5" fill="currentColor" opacity=".25"/><path d="M15 25h18M15 30h18M15 35h11" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+        <span class="ct">Memo</span>
+        <span class="cd">Jana memo rasmi dengan tajuk, butiran program, agenda dan lampiran senarai edaran.</span>
+        <span class="go">Buka Memo →</span>
+      </button>
+      <button type="button" class="choice minit" id="pickMinit">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="10" y="6" width="28" height="36" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M15 15l2.5 2.5L22 13M15 24l2.5 2.5L22 22M15 33l2.5 2.5L22 31" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M26 16h7M26 25h7M26 34h7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+        <span class="ct">Minit Mesyuarat</span>
+        <span class="cd">Jana minit lengkap dengan kehadiran, perkara berbangkit, tindakan dan pengesahan.</span>
+        <span class="go">Buka Minit →</span>
+      </button>
+    </div>
+  </section>
+
+  <div class="grid" id="mainGrid">
     <div class="leftcol">
     <!-- ================= MEMO ================= -->
     <form class="form" id="frm" autocomplete="off">
@@ -451,6 +487,7 @@ const titleCase = s => s.toLowerCase().replace(/(^|\s)(\S)/g,(m,a,b)=>a+b.toUppe
 function setTab(t){
   const minit=t==="minit";
   $("tabMemo").setAttribute("aria-selected",String(!minit)); $("tabMinit").setAttribute("aria-selected",String(minit));
+  $("welcome").hidden=true; $("mainGrid").hidden=false; $("tabsBar").hidden=false;
   $("frm").hidden=minit; $("frmMinit").hidden=!minit; $("preview").hidden=minit; $("previewMinit").hidden=!minit; $("setPanel").hidden=minit;
   document.body.dataset.sys = minit ? "minit" : "memo"; window.scrollTo(0,0);
   store.set("tab",t);
@@ -934,8 +971,14 @@ $("frmMinit").addEventListener("submit",async e=>{
 document.addEventListener("input",e=>{ if(e.target.closest("#frmMinit")) return; if(SETTINGS.includes(e.target.id)) store.set("f:"+e.target.id,e.target.value); if(e.target.id!=="cari"&&e.target.id!=="masterTxt"){ update(); if(e.target.id==="kepala") updateMinit(); } });
 document.addEventListener("change",e=>{ if(e.target.closest("#frmMinit")) return; if(SETTINGS.includes(e.target.id)) store.set("f:"+e.target.id,e.target.value); update(); });
 renderStaff(); update(); renderMinitForm(); updateMinit();
-const h=(location.hash||"").slice(1);
-setTab(h==="minit"||h==="memo" ? h : store.get("tab","memo"));
+function showWelcome(){ $("welcome").hidden=false; $("mainGrid").hidden=true; $("tabsBar").hidden=true; window.scrollTo(0,0); }
+document.querySelector(".brand").addEventListener("click",showWelcome);
+$("pickMemo").addEventListener("click",()=>setTab("memo"));
+$("pickMinit").addEventListener("click",()=>setTab("minit"));
+const h=(location.hash||"").slice(1), lastTab=store.get("tab",null);
+if(h==="minit"||h==="memo") setTab(h);
+else if(lastTab==="minit"||lastTab==="memo") setTab(lastTab);
+else showWelcome();
 })();
 </script>
 

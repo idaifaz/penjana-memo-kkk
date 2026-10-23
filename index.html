@@ -29,6 +29,7 @@
   --ok:#5fcf95; --err:#ff8a80; color-scheme:dark;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:14px;line-height:1.5;
   padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 40px}
 .wrap{max-width:1260px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
@@ -149,7 +150,7 @@ table.p-tbl td.body{padding:12px 12px 10px;vertical-align:top}
 <body>
 <div class="wrap">
   <header class="top">
-    <h1>Penjana Memo KKK</h1>
+    <h1 id="appTitle">Penjana Memo KKK</h1>
     <div class="tabs" role="tablist">
       <button type="button" role="tab" id="tabMemo" aria-selected="true">Memo</button>
       <button type="button" role="tab" id="tabMinit" aria-selected="false">Minit mesyuarat</button>
@@ -233,7 +234,6 @@ Hal-hal lain</textarea></label>
     <form class="form" id="frmMinit" autocomplete="off" hidden>
       <section class="panel">
         <h2>Maklumat mesyuarat</h2>
-        <div class="tools"><button type="button" id="dariMemo">Isi dari memo</button><span class="hint">Salin nama mesyuarat, bil, tarikh, tempat, masa dan staf yang dipilih dalam tab Memo.</span></div>
         <div class="row">
           <label class="f" style="grid-column:span 2">Nama mesyuarat<input type="text" data-path="nama"></label>
           <label class="f">Bil<input type="text" data-path="bil" placeholder="5/2026"></label>
@@ -275,7 +275,7 @@ Hal-hal lain</textarea></label>
       </section>
     </form>
 
-    <section class="panel">
+    <section class="panel" id="setPanel">
       <details class="set">
         <summary>Tetapan kolej &amp; penandatangan memo</summary>
         <div class="inner">
@@ -434,7 +434,9 @@ const titleCase = s => s.toLowerCase().replace(/(^|\s)(\S)/g,(m,a,b)=>a+b.toUppe
 function setTab(t){
   const minit=t==="minit";
   $("tabMemo").setAttribute("aria-selected",String(!minit)); $("tabMinit").setAttribute("aria-selected",String(minit));
-  $("frm").hidden=minit; $("frmMinit").hidden=!minit; $("preview").hidden=minit; $("previewMinit").hidden=!minit;
+  $("frm").hidden=minit; $("frmMinit").hidden=!minit; $("preview").hidden=minit; $("previewMinit").hidden=!minit; $("setPanel").hidden=minit;
+  const nm = minit ? "Penjana Minit Mesyuarat KKK" : "Penjana Memo KKK";
+  $("appTitle").textContent=nm; document.title=nm; window.scrollTo(0,0);
   store.set("tab",t);
 }
 $("tabMemo").addEventListener("click",()=>setTab("memo"));
@@ -820,7 +822,7 @@ $("addHadirBtn").addEventListener("click",()=>addPerson("hadir","addHadir"));
 $("addAbsenBtn").addEventListener("click",()=>addPerson("absen","addAbsen"));
 ["addHadir","addAbsen"].forEach(id=>$(id).addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); addPerson(id==="addHadir"?"hadir":"absen",id); } }));
 $("addSec").addEventListener("click",()=>{ M.extra.push({title:"",text:"",tind:T(""),points:[]}); saveM(); renderMinitForm(); updateMinit(); });
-$("dariMemo").addEventListener("click",()=>{
+if($("dariMemo")) $("dariMemo").addEventListener("click",()=>{
   const nm=plain($("nama").value).trim().replace(/\s+/g," ");
   const bm=nm.match(/\bBil\.?\s*([0-9]+\s*\/\s*[0-9]{4}|\S+)/i);
   if(bm) M.bil=bm[1].replace(/\s+/g,"").replace(/^0+(\d)/,"$1");

@@ -11,3 +11,5 @@ Isi tarikh, nama program, tempat dan agenda, pilih staf untuk lampiran, kemudian
 - Ruj. Fail dibiarkan kosong untuk diisi manual.
 
 Buka: https://idaifaz.github.io/penjana-memo-kkk/
+
+Dibina oleh Ida Fadliza binti Abu Zarin.

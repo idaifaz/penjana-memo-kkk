@@ -135,7 +135,7 @@ table.p-tbl td.body{padding:12px 12px 10px;vertical-align:top}
 .p-foot{text-align:center;color:var(--paper-green);font-weight:700;font-size:10px;margin-top:10px}
 .p-lamp{text-align:right;margin-bottom:16px}
 .p-ed{list-style:none;margin:0 0 0 30px;padding:0;display:flex;flex-direction:column;gap:10px}
-.p-ed li{display:grid;grid-template-columns:24px 1fr;gap:4px}
+.p-ed li{display:grid;grid-template-columns:24px minmax(0,1.15fr) minmax(0,1fr);gap:4px 12px}
 /* minit */
 .m-title{text-align:center;font-weight:700;margin-bottom:20px}
 .m-det{display:grid;grid-template-columns:110px 20px 1fr;margin-bottom:18px}
@@ -572,6 +572,17 @@ $("simpanStaf").addEventListener("click",()=>{
   $("urus").hidden=true;$("urusBtn").hidden=false; renderStaff(); update();
 });
 
+// ---------- jawatan untuk lampiran ----------
+// Sumber: "Nama (Jawatan)" dalam senarai staf, atau jawatan yang pernah ditaip dalam minit
+const normName = s => sortKey((s||"").replace(/,\s*[A-Z.]{2,}\s*$/,"")).replace(/^(hjh?|hajah|haji)\.?\s+/i,"").toLowerCase().replace(/\bbt\b/g,"binti").replace(/[^a-z0-9@ ]/g,"").replace(/\s+/g," ").trim();
+function splitJaw(s){
+  const m=s.match(/^(.*?)\s*\(([^)]*)\)\s*$/);
+  if(m) return {n:m[1],j:m[2]};
+  let j="";
+  let mem={}; try{ mem=JAW; }catch(e){}
+  try{ const map=Object.assign({},store.get("jaw",{}),mem), key=normName(s); for(const k in map){ if(normName(k)===key){ j=String(map[k]).replace(/\s*\([^)]*\)\s*$/,""); break; } } }catch(e){}
+  return {n:s,j};
+}
 function update(){
   const d=data();
   const sal=1; // kotak SALINAN sentiasa dipapar
@@ -602,7 +613,7 @@ function update(){
     ${d.nota?`<div class="p-foot">${esc(d.nota)}</div>`:""}
   </div>`;
   const p2 = `<div class="paper"><div class="p-lamp">${d.lampHead}</div>
-    <ol class="p-ed">${d.edaran.length?d.edaran.map((n,i)=>`<li><span>${i+1}.</span>${esc(n)}</li>`).join(""):'<li><span></span><em style="color:var(--paper-mute)">Belum pilih staf</em></li>'}</ol></div>`;
+    <ol class="p-ed">${d.edaran.length?d.edaran.map((n,i)=>{const x=splitJaw(n);return `<li><span>${i+1}.</span><span>${esc(x.n)}</span><span>${esc(x.j)}</span></li>`;}).join(""):'<li><span></span><em style="color:var(--paper-mute)">Belum pilih staf</em></li>'}</ol></div>`;
   $("preview").innerHTML=p1+p2;
 }
 
@@ -696,7 +707,13 @@ function buildDocXML(d){
   b+=table(cw,rows,{center:true});
   if(d.nota) b+=P(R(d.nota,{b:true,color:"0A9A45",sz:18}),{before:160,after:0,align:"center"});
   b+=P(R(d.lampHead),{pageBreak:1,after:360,align:"right"});
-  d.edaran.forEach((n,i)=>{ b+=P(R((i+1)+".")+TAB+R(n),{after:200,tabs:[["left",1100]],ind:[1100,500]}); });
+  if(d.edaran.length){
+    const ew=[700,4500,4160];
+    b+=table(ew,d.edaran.map((n,i)=>{ const x=splitJaw(n); return [
+      cell(ew[0],P(R((i+1)+"."),{after:120,align:"right"}),{nob:1}),
+      cell(ew[1],P(R(x.n),{after:120}),{nob:1}),
+      cell(ew[2],P(R(x.j),{after:120}),{nob:1})]; }),{nob:1});
+  }
   return docWrap(b,[851,1273]);
 }
 const STYLES=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>

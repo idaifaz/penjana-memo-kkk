@@ -574,7 +574,7 @@ $("simpanStaf").addEventListener("click",()=>{
 
 function update(){
   const d=data();
-  const sal=d.salinan.length;
+  const sal=1; // kotak SALINAN sentiasa dipapar
   const tarikhR = d.hijri
     ? `<div class="d"><span>Tarikh:</span><span>${esc(d.hijri)}</span><span></span><span>${esc(d.masihi)}</span></div>`
     : `<div>Tarikh: ${esc(d.masihi)}</div>`;
@@ -666,7 +666,7 @@ function buildDocXML(d){
   }
   b+=P("",{after:120});
   const cw=[1500,4900,2960];
-  const sal=d.salinan.length;
+  const sal=1; // kotak SALINAN sentiasa dipapar
   const lab=t=>cell(cw[0],P(R(t,{b:true}),{after:0,align:"center"}),{va:"center"});
   const salCell=P(R("SALINAN",{b:true})+R(" :"),{after:0})+d.salinan.map(s=>P(R(s),{after:0})).join("");
   let body="";
